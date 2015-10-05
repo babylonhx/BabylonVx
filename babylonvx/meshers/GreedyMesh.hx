@@ -84,18 +84,18 @@ import com.babylonhx.math.Matrix;
 	          var done = false;
 	          var h = 1;
 	          while(j+h < dims[v]) {
-	          	h++;
 	          	var k=0;
 	          	while(k < w) {
-	            k++;
 	              if(c != mask[n+k+h*dims[u]]) {
 	                done = true;
 	                break;
 	              }
+	              k++;
 	            }
 	            if(done) {
 	              break;
 	            }
+	            h++;
 	          }
 	          //Add quad
 	          x[u] = i;  x[v] = j;

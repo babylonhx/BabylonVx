@@ -169,6 +169,8 @@ import com.babylonhx.Node;
 		vertexData.indices = indices;
 		vertexData.normals = rawMesh.normals;
 		vertexData.colors = colors;
+
+		VertexData.ComputeNormals(rawMesh.vertices, indices, rawMesh.normals);
 		
 		if(passID == 0) {
 			if(vertexData.positions.length > 0) {
@@ -283,7 +285,6 @@ format:
 		for(i in 0...zoxelData.frame1.length) {
 			var hexColor:Dynamic = Utils.rgb2hex(this.coloringFunction(zoxelData.frame1[i][3], zoxelData.frame1[i][4]));
 			if(hexColor.length <= 6) {
-				//zoxelData.frame1[i][3] = parseInt(hexColor+'FF', 16);
 				zoxelData.frame1[i][3] = Std.parseInt(hexColor+'FF');
 			} else {
 				zoxelData.frame1[i][3] = Std.parseInt(hexColor);
@@ -292,6 +293,29 @@ format:
 		
 		return zoxelData;
 	}
+
+	public function makeVoxels(l:Array<Int>, h:Array<Int>, f:Dynamic):Dynamic {
+	    var d = [ h[0]-l[0], h[1]-l[1], h[2]-l[2] ]
+	      , v = new  haxe.io.Int32Array(d[0]*d[1]*d[2])
+	      , n = 0;
+	    var k=l[2];
+	    while(k<h[2]){
+	    	var j=l[1];
+	    	while(j<h[1]){
+	    		var i=l[0];
+	    		while(i<h[0]){
+	    			v[n] = f(i,j,k);
+	    			i++; n++;
+	    		}
+	    		j++;
+	    	}
+	    	k++;
+	    }
+	    this.voxelData.voxels = v;
+	    this.voxelData.dimensions = d;
+	    return {voxels:v, dims:d};
+	  }
+
 
 	public function handlePick(pickResult:Dynamic):Dynamic{
 		var mesh = pickResult.pickedMesh.root;
