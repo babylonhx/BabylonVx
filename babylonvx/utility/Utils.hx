@@ -25,7 +25,7 @@ package com.babylonvx.utility;
 		var A = Std.parseInt(hexStr.substring(6,8));
 		return [R,G,B,A];
 	}
-	
+
 	return [R,G,B];
 	}
 
