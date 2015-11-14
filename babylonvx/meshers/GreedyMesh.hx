@@ -25,8 +25,15 @@ import com.babylonhx.math.Matrix;
     	return volume[(i + dims[0] * (j + dims[1] * k))];
   	}
 
+  	public function subtractVec(_vec1:Dynamic, _vec2:Dynamic):Dynamic {
+		var x = _vec1.x - _vec2.x;
+		var y = _vec1.y - _vec2.y;
+		var z = _vec1.z - _vec2.z;
+		return {x:x, y:y, z:z}
+	}
+
   	public function getData():Dynamic{
-  	  var vertices = [], faces = [], normals = [];
+  	  var vertices = [], faces = [], normals = [], uvs = [], uv2s = [], uv3s = [], uv4s = [];
 	  
 	  for(d in 0...3) {
 	    var i, j, k, l, w, h
@@ -34,7 +41,7 @@ import com.babylonhx.math.Matrix;
 	      , v = (d+2)%3
 	      , x = [0,0,0]
 	      , q = [0,0,0]
-	      , nm;
+	      , nm:Array<Float>;
 	    if(mask.length < dims[u] * dims[v]) {
 	      mask = new haxe.io.Int32Array(dims[u] * dims[v]);
 	    }
@@ -99,6 +106,10 @@ import com.babylonhx.math.Matrix;
 	          }
 	          //Add quad
 	          x[u] = i;  x[v] = j;
+
+	          nm = [0,0,0];
+	          nm[d] = c > 0.0 ? 1.0 : -1.0;
+
 	          var du = [0,0,0]
 	            , dv = [0,0,0];
 	          if(c > 0) {
@@ -109,9 +120,7 @@ import com.babylonhx.math.Matrix;
 	            du[v] = h;
 	            dv[u] = w;
 	          }
-	          
-	          nm = [0,0,0];
-	          nm[d] = c > 0 ? 1 : -1;
+	        
 
 	          
 	          var vertex_count = vertices.length/3;
@@ -127,21 +136,84 @@ import com.babylonhx.math.Matrix;
 	          vertices.push(x[0]+dv[0]);
 	          vertices.push(x[1]+dv[1]);
 	          vertices.push(x[2]+dv[2]);
+
 	          faces.push([vertex_count, vertex_count+1, vertex_count+2, c, metaC]);
 	          faces.push([vertex_count, vertex_count+2, vertex_count+3, c, metaC]);
-	          normals.push(nm[0]);
-	          normals.push(nm[1]);
-	          normals.push(nm[2]);
-	          normals.push(nm[0]);
-	          normals.push(nm[1]);
-	          normals.push(nm[2]);
-	          normals.push(nm[0]);
-	          normals.push(nm[1]);
-	          normals.push(nm[2]);
+	      	 
 	          normals.push(nm[0]);
 	          normals.push(nm[1]);
 	          normals.push(nm[2]);
 
+	          normals.push(nm[0]);
+	          normals.push(nm[1]);
+	          normals.push(nm[2]);
+
+	          normals.push(nm[0]);
+	          normals.push(nm[1]);
+	          normals.push(nm[2]);
+
+	          normals.push(nm[0]);
+	          normals.push(nm[1]);
+	          normals.push(nm[2]);
+
+
+	          if (nm[0] == -1) {
+	          	  uvs.push(0.0);
+				  uvs.push(0.66);
+				  uvs.push(0.0);
+				  uvs.push(0.33);
+				  uvs.push(1.0);
+				  uvs.push(0.33);
+				  uvs.push(1.0);
+				  uvs.push(0.66);
+               }else if (nm[2] == -1) {
+               	  uvs.push(1.0);
+				  uvs.push(0.66);
+				  uvs.push(0.0);
+				  uvs.push(0.66);
+				  uvs.push(0.0);
+				  uvs.push(0.33);
+				  uvs.push(1.0);
+				  uvs.push(0.33);
+                }else if (nm[0] == 1) {
+                  uvs.push(0.0);
+				  uvs.push(0.66);
+				  uvs.push(0.0);
+				  uvs.push(0.33);
+				  uvs.push(1.0);
+				  uvs.push(0.33);
+				  uvs.push(1.0);
+				  uvs.push(0.66);
+                }else if (nm[2] == 1) {
+                  uvs.push(0.0);
+				  uvs.push(0.33);
+				  uvs.push(1.0);
+				  uvs.push(0.33);
+				  uvs.push(1.0);
+				  uvs.push(0.66);
+				  uvs.push(0.0);
+				  uvs.push(0.66);
+                }else if (nm[1] == 1) {
+                  uvs.push(1.0);
+				  uvs.push(1.0);
+				  uvs.push(0.0);
+				  uvs.push(1.0);
+				  uvs.push(0.0);
+				  uvs.push(0.6666);
+				  uvs.push(0.0);
+				  uvs.push(0.6666);
+                }else {
+                  uvs.push(1.0);
+				  uvs.push(0.33);
+				  uvs.push(0.0);
+				  uvs.push(0.33);
+				  uvs.push(0.0);
+				  uvs.push(0.0);
+				  uvs.push(1.0);
+				  uvs.push(0.0);
+                }
+
+			
 
 	          for(l in 0...h)
 	          for(k in 0...w) {
@@ -157,7 +229,7 @@ import com.babylonhx.math.Matrix;
 	  	  }
 	    }
 	  }
-	  return { vertices: vertices, faces: faces, normals: normals };
+	  return { vertices: vertices, faces: faces, normals: normals, uvs: uvs, uv2s: uv2s, uv3s: uv3s};
 
   }
 

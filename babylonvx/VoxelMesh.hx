@@ -1,6 +1,13 @@
 package com.babylonvx;
 import com.babylonhx.mesh.Mesh;
+import com.babylonhx.mesh.SubMesh;
 import com.babylonhx.math.Vector3;
+import com.babylonhx.math.Color3;
+import com.babylonhx.materials.StandardMaterial;
+import com.babylonhx.materials.Material;
+import com.babylonhx.materials.MultiMaterial;
+import com.babylonhx.materials.textures.Texture;
+import com.babylonhx.mesh.SubMesh;
 import com.babylonvx.utility.Utils;
 import com.babylonvx.meshers.GreedyMesh;
 import com.babylonhx.mesh.VertexData;
@@ -15,9 +22,12 @@ import com.babylonhx.Node;
 
 	private var root:VoxelMesh;
 	private var transparentMesh:Dynamic;
+	private var scene:Scene;
 	public var voxelData:Dynamic;
+	public var _vertexData:Dynamic;
 	public var coloringFunction:Dynamic;
 	public var evaluateFunction:Dynamic;
+	public var subMeshMaterials:Dynamic;
 	public var noVoxels:Bool;
 	public var mesher:GreedyMesh;
 	public var oldVisibility:Bool;
@@ -30,7 +40,7 @@ import com.babylonhx.Node;
 		super(name, scene, parent, source, doNotCloneChildren);	
 		this.noVoxels = true;
 		this.oldVisibility = true;
-
+		this.scene = scene;
 		//Set up transparent mesh
 		this.transparentMesh = new Mesh(name+'-tsp', scene, this);
 		this.transparentMesh.noVoxels = true;
@@ -51,6 +61,47 @@ import com.babylonhx.Node;
 		this.evaluateFunction =  function(id:Int, meta:Int):Bool{
 			return (id!=0);
 		}
+
+		this.subMeshMaterials = function():Dynamic{
+			var materialPlane = new StandardMaterial("texturePlane", scene);
+			materialPlane.diffuseTexture = new Texture("assets/img/grass.jpg", scene);
+			materialPlane.diffuseTexture.uScale = 5.0;//Repeat 5 times on the Vertical Axes
+			materialPlane.diffuseTexture.vScale = 5.0;//Repeat 5 times on the Horizontal Axes
+			materialPlane.backFaceCulling = false;//Allways show the front and the back of an element
+
+			var material0 = new StandardMaterial("mat0", this.scene);
+		    material0.diffuseColor = new Color3(1, 0, 0);
+		    material0.bumpTexture = new Texture("assets/img/normalMap.jpg", this.scene);
+
+		    
+		    var material1 = new StandardMaterial("mat1", this.scene);
+		    material1.diffuseColor = new Color3(0, 0, 1);
+
+		    
+		    var material2 = new StandardMaterial("mat2", this.scene);
+		    material2.diffuseColor = new Color3(0, 1, 1);
+		    //material2.emissiveColor = new Color3(0.4, 0, 0.4);
+
+		    var multimat = new MultiMaterial("multi", this.scene);
+			multimat.subMaterials.push(material0);
+			multimat.subMaterials.push(material1);
+			multimat.subMaterials.push(material2);
+
+
+
+
+			var verticesCount = this.getTotalVertices();
+			//this.subMeshes.push(new SubMesh(0, 0, verticesCount, 0, verticesCount, this));
+
+			this.subMeshes.push(new SubMesh(0, 0, verticesCount, 0, Math.round(verticesCount/3), this));
+			this.subMeshes.push(new SubMesh(1, 0, verticesCount, Math.round(verticesCount/3), Math.round(verticesCount/3), this));
+			this.subMeshes.push(new SubMesh(2, 0, verticesCount, (Math.round(verticesCount/3)*2), Math.round(verticesCount/3), this));
+			
+			this.material = multimat;
+			trace(verticesCount);
+			return verticesCount;
+		};
+		//var vertCount = this.subMeshMaterials(this, scene);
 
 
 	}
@@ -169,8 +220,19 @@ import com.babylonhx.Node;
 		vertexData.indices = indices;
 		vertexData.normals = rawMesh.normals;
 		vertexData.colors = colors;
+		vertexData.uvs = rawMesh.uvs;
+		vertexData.applyToMesh(this);
+		this._vertexData = vertexData;
 
-		VertexData.ComputeNormals(rawMesh.vertices, indices, rawMesh.normals);
+
+		//vertexData.uv2s = rawMesh.uv2s;
+		//vertexData.uv3s = rawMesh.uv3s;
+		//vertexData.uv4s = rawMesh.uv4s;
+		//vertexData.uvs = uvs;
+
+		//VertexData.ComputeNormals(rawMesh.vertices, indices, rawMesh.normals);
+
+		//VertexData._ComputeSides(Mesh.DEFAULTSIDE, rawMesh.vertices, indices, rawMesh.normals, rawMesh.uvs);
 		
 		if(passID == 0) {
 			if(vertexData.positions.length > 0) {
