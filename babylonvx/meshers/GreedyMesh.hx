@@ -108,7 +108,7 @@ import com.babylonhx.math.Matrix;
 	          x[u] = i;  x[v] = j;
 
 	          nm = [0,0,0];
-	          nm[d] = c > 0.0 ? 1.0 : -1.0;
+	          //nm[d] = c > 0.0 ? 1.0 : -1.0;
 
 	          var du = [0,0,0]
 	            , dv = [0,0,0];
@@ -140,6 +140,16 @@ import com.babylonhx.math.Matrix;
 	          faces.push([vertex_count, vertex_count+1, vertex_count+2, c, metaC]);
 	          faces.push([vertex_count, vertex_count+2, vertex_count+3, c, metaC]);
 	      	 
+
+
+	          normals.push(nm[0]);
+	          normals.push(nm[1]);
+	          normals.push(nm[2]);
+ 
+	          normals.push(nm[0]);
+	          normals.push(nm[1]);
+	          normals.push(nm[2]);
+	         
 	          normals.push(nm[0]);
 	          normals.push(nm[1]);
 	          normals.push(nm[2]);
@@ -147,72 +157,8 @@ import com.babylonhx.math.Matrix;
 	          normals.push(nm[0]);
 	          normals.push(nm[1]);
 	          normals.push(nm[2]);
-
-	          normals.push(nm[0]);
-	          normals.push(nm[1]);
-	          normals.push(nm[2]);
-
-	          normals.push(nm[0]);
-	          normals.push(nm[1]);
-	          normals.push(nm[2]);
-
-
-	          if (nm[0] == -1) {
-	          	  uvs.push(0.0);
-				  uvs.push(0.66);
-				  uvs.push(0.0);
-				  uvs.push(0.33);
-				  uvs.push(1.0);
-				  uvs.push(0.33);
-				  uvs.push(1.0);
-				  uvs.push(0.66);
-               }else if (nm[2] == -1) {
-               	  uvs.push(1.0);
-				  uvs.push(0.66);
-				  uvs.push(0.0);
-				  uvs.push(0.66);
-				  uvs.push(0.0);
-				  uvs.push(0.33);
-				  uvs.push(1.0);
-				  uvs.push(0.33);
-                }else if (nm[0] == 1) {
-                  uvs.push(0.0);
-				  uvs.push(0.66);
-				  uvs.push(0.0);
-				  uvs.push(0.33);
-				  uvs.push(1.0);
-				  uvs.push(0.33);
-				  uvs.push(1.0);
-				  uvs.push(0.66);
-                }else if (nm[2] == 1) {
-                  uvs.push(0.0);
-				  uvs.push(0.33);
-				  uvs.push(1.0);
-				  uvs.push(0.33);
-				  uvs.push(1.0);
-				  uvs.push(0.66);
-				  uvs.push(0.0);
-				  uvs.push(0.66);
-                }else if (nm[1] == 1) {
-                  uvs.push(1.0);
-				  uvs.push(1.0);
-				  uvs.push(0.0);
-				  uvs.push(1.0);
-				  uvs.push(0.0);
-				  uvs.push(0.6666);
-				  uvs.push(0.0);
-				  uvs.push(0.6666);
-                }else {
-                  uvs.push(1.0);
-				  uvs.push(0.33);
-				  uvs.push(0.0);
-				  uvs.push(0.33);
-				  uvs.push(0.0);
-				  uvs.push(0.0);
-				  uvs.push(1.0);
-				  uvs.push(0.0);
-                }
-
+			
+	      
 			
 
 	          for(l in 0...h)
